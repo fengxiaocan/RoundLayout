@@ -11,7 +11,7 @@
 
 <img src="/img/01.png" width="300"/> <img src="/img/02.png" width="300"/> 
 
-<video src="/img/03.mp4"/>
+<video src="/img/03.mp4"  controls height="600" wight="800">您的浏览器不支持video标签</video>
 
 ## 支持的特性
 
