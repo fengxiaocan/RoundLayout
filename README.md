@@ -11,7 +11,7 @@
 
 <img src="/img/01.png" width="300"/> <img src="/img/02.png" width="300"/> 
 
-<video src="/img/03.mp4" width="300"/>
+<video src="/img/03.mp4"/>
 
 ## 支持的特性
 
