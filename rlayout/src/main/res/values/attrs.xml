@@ -38,8 +38,8 @@
     <attr name="round_corner_bottom_right" format="integer|dimension" />
 
     <!--描边颜色／半径-->
-    <attr name="stroke_color" format="color|reference" />
-    <attr name="stroke_width" format="integer|dimension" />
+    <attr name="round_stroke_color" format="color|reference" />
+    <attr name="round_stroke_width" format="integer|dimension" />
 
     <!-- 是否剪裁 RCLayout 的背景 -->
     <attr name="clip_background" format="boolean" />
@@ -52,8 +52,8 @@
         <attr name="round_corner_top_right" />
         <attr name="round_corner_bottom_left" />
         <attr name="round_corner_bottom_right" />
-        <attr name="stroke_color" />
-        <attr name="stroke_width" />
+        <attr name="round_stroke_color" />
+        <attr name="round_stroke_width" />
         <attr name="clip_background" />
     </declare-styleable>
 
@@ -65,8 +65,8 @@
         <attr name="round_corner_top_right" />
         <attr name="round_corner_bottom_left" />
         <attr name="round_corner_bottom_right" />
-        <attr name="stroke_color" />
-        <attr name="stroke_width" />
+        <attr name="round_stroke_color" />
+        <attr name="round_stroke_width" />
         <attr name="clip_background" />
     </declare-styleable>
     <!--假体：用于提示-->
@@ -77,8 +77,8 @@
         <attr name="round_corner_top_right" />
         <attr name="round_corner_bottom_left" />
         <attr name="round_corner_bottom_right" />
-        <attr name="stroke_color" />
-        <attr name="stroke_width" />
+        <attr name="round_stroke_color" />
+        <attr name="round_stroke_width" />
         <attr name="clip_background" />
     </declare-styleable>
     <!--假体：用于提示-->
@@ -89,8 +89,8 @@
         <attr name="round_corner_top_right" />
         <attr name="round_corner_bottom_left" />
         <attr name="round_corner_bottom_right" />
-        <attr name="stroke_color" />
-        <attr name="stroke_width" />
+        <attr name="round_stroke_color" />
+        <attr name="round_stroke_width" />
         <attr name="clip_background" />
     </declare-styleable>
 
@@ -102,8 +102,8 @@
         <attr name="round_corner_top_right" />
         <attr name="round_corner_bottom_left" />
         <attr name="round_corner_bottom_right" />
-        <attr name="stroke_color" />
-        <attr name="stroke_width" />
+        <attr name="round_stroke_color" />
+        <attr name="round_stroke_width" />
         <attr name="clip_background" />
     </declare-styleable>
 

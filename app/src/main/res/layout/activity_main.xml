@@ -272,8 +272,8 @@
             android:orientation="vertical"
             app:clip_background="true"
             app:round_corner="15dp"
-            app:stroke_color="#000"
-            app:stroke_width="2dp">
+            app:round_stroke_color="#000"
+            app:round_stroke_width="2dp">
 
             <TextView
                 android:layout_width="wrap_content"
