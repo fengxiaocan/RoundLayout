@@ -85,8 +85,8 @@ RCRelativeLayout(Round Corner RelativeLayout)，使用圆角布局包裹需要�
 | round_corner_bottom_left  | 左下角圆角半径 | 否      | dp      |
 | round_corner_bottom_right | 右下角圆角半径 | 否      | dp      |
 | round_as_circle           | 是否剪裁为圆形 | 否      | boolean |
-| stroke_width              | 描边半径    | 否      | dp      |
-| stroke_color              | 描边颜色    | 否      | color   |
+| round_stroke_width        | 描边半径    | 否      | dp      |
+| round_stroke_color        | 描边颜色    | 否      | color   |
 | clip_background           | 剪裁背景    | 否      | boolean |
 
 ### 3. 属性简介
