@@ -135,7 +135,15 @@ public class RoundHelper {
                 (int) areas.right, (int) areas.bottom);
         mAreaRegion.setPath(mClipPath, clip);
     }
-
+    
+    /**
+     * 开启硬件加速
+     * @param view
+     */
+    public void openHardware(View view){
+        view.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+    }
+    
     public void onClipDraw(Canvas canvas) {
         if (mStrokeWidth > 0) {
             // 支持半透明描边，将与描边区域重叠的内容裁剪掉

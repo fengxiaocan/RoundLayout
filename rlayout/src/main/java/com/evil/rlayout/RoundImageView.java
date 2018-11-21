@@ -22,7 +22,6 @@
 
 package com.evil.rlayout;
 
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -41,7 +40,6 @@ import com.evil.rlayout.helper.RoundHelper;
 /**
  * 作用：圆角图片
  */
-@SuppressLint("AppCompatCustomView")
 public class RoundImageView extends ImageView implements Checkable, RoundAttrs {
 
     RoundHelper mRCHelper;
@@ -81,12 +79,15 @@ public class RoundImageView extends ImageView implements Checkable, RoundAttrs {
         super.onSizeChanged(w, h, oldw, oldh);
         mRCHelper.onSizeChanged(this, w, h);
     }
+    
+    
 
     @Override
     public void draw(Canvas canvas) {
         mRCHelper.refreshRegion(this);
         if (mRCHelper.mClipBackground) {
             canvas.save();
+	        mRCHelper.openHardware(this);
             canvas.clipPath(mRCHelper.mClipPath);
             super.draw(canvas);
             canvas.restore();
@@ -99,6 +100,7 @@ public class RoundImageView extends ImageView implements Checkable, RoundAttrs {
     protected void onDraw(Canvas canvas) {
         canvas.saveLayer(mRCHelper.mLayer, null, Canvas.ALL_SAVE_FLAG);
         super.onDraw(canvas);
+        mRCHelper.openHardware(this);
         mRCHelper.onClipDraw(canvas);
         canvas.restore();
     }

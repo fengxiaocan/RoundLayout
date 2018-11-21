@@ -85,6 +85,7 @@ public class RoundLinearLayout extends LinearLayout implements Checkable, RoundA
     protected void dispatchDraw(Canvas canvas) {
         canvas.saveLayer(mRCHelper.mLayer, null, Canvas.ALL_SAVE_FLAG);
         super.dispatchDraw(canvas);
+        mRCHelper.openHardware(this);
         mRCHelper.onClipDraw(canvas);
         canvas.restore();
     }
@@ -94,6 +95,7 @@ public class RoundLinearLayout extends LinearLayout implements Checkable, RoundA
         mRCHelper.refreshRegion(this);
         if (mRCHelper.mClipBackground) {
             canvas.save();
+            mRCHelper.openHardware(this);
             canvas.clipPath(mRCHelper.mClipPath);
             super.draw(canvas);
             canvas.restore();
