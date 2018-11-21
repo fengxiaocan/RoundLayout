@@ -22,8 +22,12 @@
 
 package com.evil.rlayout;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.os.Build;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.Checkable;
@@ -39,17 +43,34 @@ import com.evil.rlayout.helper.RoundHelper;
  */
 public class RoundRelativeLayout extends RelativeLayout implements Checkable, RoundAttrs {
     RoundHelper mRCHelper;
-
-    public RoundRelativeLayout(Context context) {
-        this(context, null);
+    
+    public RoundRelativeLayout(@NonNull Context context) {
+        super(context);
+        mRCHelper = new RoundHelper();
+        mRCHelper.initAttrs(context, null);
     }
-
-    public RoundRelativeLayout(Context context,AttributeSet attrs) {
-        this(context, attrs, 0);
+    
+    public RoundRelativeLayout(
+            @NonNull Context context,@Nullable AttributeSet attrs)
+    {
+        super(context,attrs);
+        mRCHelper = new RoundHelper();
+        mRCHelper.initAttrs(context, attrs);
     }
-
-    public RoundRelativeLayout(Context context,AttributeSet attrs,int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
+    
+    public RoundRelativeLayout(
+            @NonNull Context context,@Nullable AttributeSet attrs,int defStyleAttr)
+    {
+        super(context,attrs,defStyleAttr);
+        mRCHelper = new RoundHelper();
+        mRCHelper.initAttrs(context, attrs);
+    }
+    
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public RoundRelativeLayout(
+            @NonNull Context context,@Nullable AttributeSet attrs,int defStyleAttr,int defStyleRes)
+    {
+        super(context,attrs,defStyleAttr,defStyleRes);
         mRCHelper = new RoundHelper();
         mRCHelper.initAttrs(context, attrs);
     }
