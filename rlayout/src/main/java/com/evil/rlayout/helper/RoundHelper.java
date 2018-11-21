@@ -36,6 +36,7 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 import android.graphics.Region;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.Checkable;
 
@@ -58,7 +59,7 @@ public class RoundHelper {
     public int mStrokeWidth;               // 描边半径
     public boolean mClipBackground;        // 是否剪裁背景
     public Region mAreaRegion;             // 内容区域
-    public int mEdgeFix = 10;              // 边缘修复
+//    public int mEdgeFix = 0;              // 边缘修复
     public RectF mLayer;                   // 画布图层大小
 
     public void initAttrs(Context context, AttributeSet attrs) {
@@ -103,6 +104,7 @@ public class RoundHelper {
         mPaint = new Paint();
         mPaint.setColor(Color.WHITE);
         mPaint.setAntiAlias(true);
+        mPaint.setDither(true);
     }
 
     public void onSizeChanged(View view, int w, int h) {
@@ -127,8 +129,8 @@ public class RoundHelper {
         } else {
             mClipPath.addRoundRect(areas, radii, Path.Direction.CW);
         }
-        mClipPath.moveTo(-mEdgeFix, -mEdgeFix);  // 通过空操作让Path区域占满画布
-        mClipPath.moveTo(w + mEdgeFix, h + mEdgeFix);
+//        mClipPath.moveTo(-mEdgeFix, -mEdgeFix);  // 通过空操作让Path区域占满画布
+//        mClipPath.moveTo(w + mEdgeFix, h + mEdgeFix);
         Region clip = new Region((int) areas.left, (int) areas.top,
                 (int) areas.right, (int) areas.bottom);
         mAreaRegion.setPath(mClipPath, clip);
