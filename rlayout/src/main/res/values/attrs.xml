@@ -106,5 +106,27 @@
         <attr name="round_stroke_width" />
         <attr name="clip_background" />
     </declare-styleable>
+    <declare-styleable name="RoundTextView">
+        <attr name="round_as_circle" />
+        <attr name="round_corner" />
+        <attr name="round_corner_top_left" />
+        <attr name="round_corner_top_right" />
+        <attr name="round_corner_bottom_left" />
+        <attr name="round_corner_bottom_right" />
+        <attr name="round_stroke_color" />
+        <attr name="round_stroke_width" />
+        <attr name="clip_background" />
+    </declare-styleable>
+    <declare-styleable name="RoundButton">
+        <attr name="round_as_circle" />
+        <attr name="round_corner" />
+        <attr name="round_corner_top_left" />
+        <attr name="round_corner_top_right" />
+        <attr name="round_corner_bottom_left" />
+        <attr name="round_corner_bottom_right" />
+        <attr name="round_stroke_color" />
+        <attr name="round_stroke_width" />
+        <attr name="clip_background" />
+    </declare-styleable>
 
 </resources>

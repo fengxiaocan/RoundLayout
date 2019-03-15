@@ -31,62 +31,61 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.Checkable;
-import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.evil.rlayout.helper.RoundAttrs;
 import com.evil.rlayout.helper.RoundHelper;
 
 
 /**
- * 作用：圆角图片
+ * 作用：圆角TextView
  */
-public class RoundImageView extends ImageView implements Checkable, RoundAttrs {
+public class RoundTextView extends TextView implements Checkable, RoundAttrs {
 
     RoundHelper mRCHelper;
-    
-    public RoundImageView(@NonNull Context context) {
+
+    public RoundTextView(@NonNull Context context) {
         super(context);
         mRCHelper = new RoundHelper();
         mRCHelper.initAttrs(context, null);
     }
-    
-    public RoundImageView(
-            @NonNull Context context,@Nullable AttributeSet attrs)
+
+    public RoundTextView(@NonNull Context context, @Nullable AttributeSet attrs)
     {
-        super(context,attrs);
+        super(context, attrs);
         mRCHelper = new RoundHelper();
         mRCHelper.initAttrs(context, attrs);
     }
-    
-    public RoundImageView(
-            @NonNull Context context,@Nullable AttributeSet attrs,int defStyleAttr)
+
+    public RoundTextView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr)
     {
-        super(context,attrs,defStyleAttr);
+        super(context, attrs, defStyleAttr);
         mRCHelper = new RoundHelper();
         mRCHelper.initAttrs(context, attrs);
     }
-    
+
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public RoundImageView(
-            @NonNull Context context,@Nullable AttributeSet attrs,int defStyleAttr,int defStyleRes)
+    public RoundTextView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr,
+            int defStyleRes)
     {
-        super(context,attrs,defStyleAttr,defStyleRes);
+        super(context, attrs, defStyleAttr, defStyleRes);
         mRCHelper = new RoundHelper();
         mRCHelper.initAttrs(context, attrs);
     }
+
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         mRCHelper.onSizeChanged(this, w, h);
     }
-    
+
 
     @Override
     public void draw(Canvas canvas) {
         mRCHelper.refreshRegion(this);
         if (mRCHelper.mClipBackground) {
             canvas.save();
-	        mRCHelper.openHardware(this);
+            mRCHelper.openHardware(this);
             canvas.clipPath(mRCHelper.mClipPath);
             super.draw(canvas);
             canvas.restore();
@@ -124,9 +123,24 @@ public class RoundImageView extends ImageView implements Checkable, RoundAttrs {
 
     //--- 公开接口 ----------------------------------------------------------------------------------
 
+    public void setRadius(int radius) {
+        for (int i = 0; i < mRCHelper.radii.length; i++) {
+            mRCHelper.radii[i] = radius;
+        }
+        invalidate();
+    }
+
+    public boolean isClipBackground() {
+        return mRCHelper.mClipBackground;
+    }
+
     public void setClipBackground(boolean clipBackground) {
         mRCHelper.mClipBackground = clipBackground;
         invalidate();
+    }
+
+    public boolean isRoundAsCircle() {
+        return mRCHelper.mRoundAsCircle;
     }
 
     public void setRoundAsCircle(boolean roundAsCircle) {
@@ -134,11 +148,8 @@ public class RoundImageView extends ImageView implements Checkable, RoundAttrs {
         invalidate();
     }
 
-    public void setRadius(int radius) {
-        for (int i = 0; i < mRCHelper.radii.length; i++) {
-            mRCHelper.radii[i] = radius;
-        }
-        invalidate();
+    public float getTopLeftRadius() {
+        return mRCHelper.radii[0];
     }
 
     public void setTopLeftRadius(int topLeftRadius) {
@@ -147,10 +158,18 @@ public class RoundImageView extends ImageView implements Checkable, RoundAttrs {
         invalidate();
     }
 
+    public float getTopRightRadius() {
+        return mRCHelper.radii[2];
+    }
+
     public void setTopRightRadius(int topRightRadius) {
         mRCHelper.radii[2] = topRightRadius;
         mRCHelper.radii[3] = topRightRadius;
         invalidate();
+    }
+
+    public float getBottomLeftRadius() {
+        return mRCHelper.radii[4];
     }
 
     public void setBottomLeftRadius(int bottomLeftRadius) {
@@ -159,10 +178,18 @@ public class RoundImageView extends ImageView implements Checkable, RoundAttrs {
         invalidate();
     }
 
+    public float getBottomRightRadius() {
+        return mRCHelper.radii[6];
+    }
+
     public void setBottomRightRadius(int bottomRightRadius) {
         mRCHelper.radii[6] = bottomRightRadius;
         mRCHelper.radii[7] = bottomRightRadius;
         invalidate();
+    }
+
+    public int getStrokeWidth() {
+        return mRCHelper.mStrokeWidth;
     }
 
     public void setStrokeWidth(int strokeWidth) {
@@ -170,41 +197,13 @@ public class RoundImageView extends ImageView implements Checkable, RoundAttrs {
         invalidate();
     }
 
+    public int getStrokeColor() {
+        return mRCHelper.mStrokeColor;
+    }
+
     public void setStrokeColor(int strokeColor) {
         mRCHelper.mStrokeColor = strokeColor;
         invalidate();
-    }
-
-    public boolean isClipBackground() {
-        return mRCHelper.mClipBackground;
-    }
-
-    public boolean isRoundAsCircle() {
-        return mRCHelper.mRoundAsCircle;
-    }
-
-    public float getTopLeftRadius() {
-        return mRCHelper.radii[0];
-    }
-
-    public float getTopRightRadius() {
-        return mRCHelper.radii[2];
-    }
-
-    public float getBottomLeftRadius() {
-        return mRCHelper.radii[4];
-    }
-
-    public float getBottomRightRadius() {
-        return mRCHelper.radii[6];
-    }
-
-    public int getStrokeWidth() {
-        return mRCHelper.mStrokeWidth;
-    }
-
-    public int getStrokeColor() {
-        return mRCHelper.mStrokeColor;
     }
 
 
@@ -217,6 +216,11 @@ public class RoundImageView extends ImageView implements Checkable, RoundAttrs {
     }
 
     @Override
+    public boolean isChecked() {
+        return mRCHelper.mChecked;
+    }
+
+    @Override
     public void setChecked(boolean checked) {
         if (mRCHelper.mChecked != checked) {
             mRCHelper.mChecked = checked;
@@ -225,11 +229,6 @@ public class RoundImageView extends ImageView implements Checkable, RoundAttrs {
                 mRCHelper.mOnCheckedChangeListener.onCheckedChanged(this, mRCHelper.mChecked);
             }
         }
-    }
-
-    @Override
-    public boolean isChecked() {
-        return mRCHelper.mChecked;
     }
 
     @Override
