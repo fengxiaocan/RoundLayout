@@ -85,6 +85,7 @@ public class RoundRelativeLayout extends RelativeLayout implements Checkable, Ro
     protected void dispatchDraw(Canvas canvas) {
         canvas.saveLayer(mRCHelper.mLayer, null, Canvas.ALL_SAVE_FLAG);
         super.dispatchDraw(canvas);
+        mRCHelper.openHardware(this);
         mRCHelper.onClipDraw(canvas);
         canvas.restore();
     }

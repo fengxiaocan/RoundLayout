@@ -86,6 +86,7 @@ public class RoundFrameLayout extends FrameLayout implements Checkable, RoundAtt
     protected void dispatchDraw(Canvas canvas) {
         canvas.saveLayer(mRCHelper.mLayer, null, Canvas.ALL_SAVE_FLAG);
         super.dispatchDraw(canvas);
+        mRCHelper.openHardware(this);
         mRCHelper.onClipDraw(canvas);
         canvas.restore();
     }

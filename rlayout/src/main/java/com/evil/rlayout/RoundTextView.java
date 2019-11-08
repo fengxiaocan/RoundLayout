@@ -97,6 +97,7 @@ public class RoundTextView extends TextView implements Checkable, RoundAttrs {
     protected void onDraw(Canvas canvas) {
         canvas.saveLayer(mRCHelper.mLayer, null, Canvas.ALL_SAVE_FLAG);
         super.onDraw(canvas);
+        mRCHelper.openHardware(this);
         mRCHelper.onClipDraw(canvas);
         canvas.restore();
     }

@@ -137,6 +137,13 @@ public class RoundHelper {
                 (int) areas.bottom);
         mAreaRegion.setPath(mClipPath, clip);
     }
+    /**
+     * 开启硬件加速
+     * @param view
+     */
+    public void openHardware(View view){
+        view.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+    }
 
 
     //--- Selector 支持 ----------------------------------------------------------------------------
