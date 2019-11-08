@@ -106,7 +106,6 @@ public class RoundHelper {
         mPaint = new Paint();
         mPaint.setColor(Color.WHITE);
         mPaint.setAntiAlias(true);
-        mPaint.setFilterBitmap(true);
         mPaint.setDither(true);
     }
 
