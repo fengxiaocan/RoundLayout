@@ -86,7 +86,6 @@ public class RoundButton extends Button implements Checkable, RoundAttrs {
         mRCHelper.refreshRegion(this);
         if (mRCHelper.mClipBackground) {
             canvas.save();
-            mRCHelper.openHardware(this);
             canvas.clipPath(mRCHelper.mClipPath);
             super.draw(canvas);
             canvas.restore();
@@ -99,7 +98,6 @@ public class RoundButton extends Button implements Checkable, RoundAttrs {
     protected void onDraw(Canvas canvas) {
         canvas.saveLayer(mRCHelper.mLayer, null, Canvas.ALL_SAVE_FLAG);
         super.onDraw(canvas);
-        mRCHelper.openHardware(this);
         mRCHelper.onClipDraw(canvas);
         canvas.restore();
     }

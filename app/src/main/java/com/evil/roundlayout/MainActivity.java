@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 	private void initView() {
 		//actionBar的设置(使用自定义的设置)
 		setTitle("一个圆形的容器Layout");
-		
+
 		mRivGif1 = findViewById(R.id.riv_gif1);
 		mRivGif2 = findViewById(R.id.riv_gif2);
 		mRivGif3 = findViewById(R.id.riv_gif3);

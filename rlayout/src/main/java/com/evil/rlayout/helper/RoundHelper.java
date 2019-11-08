@@ -29,6 +29,7 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PaintFlagsDrawFilter;
 import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.PorterDuff;
@@ -36,7 +37,6 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 import android.graphics.Region;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.Checkable;
 
@@ -59,12 +59,14 @@ public class RoundHelper {
     public int mStrokeWidth;               // 描边半径
     public boolean mClipBackground;        // 是否剪裁背景
     public Region mAreaRegion;             // 内容区域
-//    public int mEdgeFix = 0;              // 边缘修复
+    //    public int mEdgeFix = 0;              // 边缘修复
     public RectF mLayer;                   // 画布图层大小
+    public boolean mChecked;              // 是否是 check 状态
+    public OnCheckedChangeListener mOnCheckedChangeListener;
 
     public void initAttrs(Context context, AttributeSet attrs) {
-        TypedArray ta = context.obtainStyledAttributes(attrs,R.styleable.RoundAttrs);
-        mRoundAsCircle = ta.getBoolean(R.styleable.RoundAttrs_round_as_circle,false);
+        TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.RoundAttrs);
+        mRoundAsCircle = ta.getBoolean(R.styleable.RoundAttrs_round_as_circle, false);
         mStrokeColorStateList = ta.getColorStateList(R.styleable.RoundAttrs_round_stroke_color);
         if (null != mStrokeColorStateList) {
             mStrokeColor = mStrokeColorStateList.getDefaultColor();
@@ -73,17 +75,17 @@ public class RoundHelper {
             mStrokeColor = Color.WHITE;
             mDefaultStrokeColor = Color.WHITE;
         }
-        mStrokeWidth = ta.getDimensionPixelSize(R.styleable.RoundAttrs_round_stroke_width,0);
-        mClipBackground = ta.getBoolean(R.styleable.RoundAttrs_clip_background,true);
-        int roundCorner = ta.getDimensionPixelSize(R.styleable.RoundAttrs_round_corner,0);
+        mStrokeWidth = ta.getDimensionPixelSize(R.styleable.RoundAttrs_round_stroke_width, 0);
+        mClipBackground = ta.getBoolean(R.styleable.RoundAttrs_clip_background, true);
+        int roundCorner = ta.getDimensionPixelSize(R.styleable.RoundAttrs_round_corner, 0);
         int roundCornerTopLeft = ta.getDimensionPixelSize(
-                R.styleable.RoundAttrs_round_corner_top_left,roundCorner);
+                R.styleable.RoundAttrs_round_corner_top_left, roundCorner);
         int roundCornerTopRight = ta.getDimensionPixelSize(
-                R.styleable.RoundAttrs_round_corner_top_right,roundCorner);
+                R.styleable.RoundAttrs_round_corner_top_right, roundCorner);
         int roundCornerBottomLeft = ta.getDimensionPixelSize(
-                R.styleable.RoundAttrs_round_corner_bottom_left,roundCorner);
+                R.styleable.RoundAttrs_round_corner_bottom_left, roundCorner);
         int roundCornerBottomRight = ta.getDimensionPixelSize(
-                R.styleable.RoundAttrs_round_corner_bottom_right,roundCorner);
+                R.styleable.RoundAttrs_round_corner_bottom_right, roundCorner);
         ta.recycle();
 
         radii[0] = roundCornerTopLeft;
@@ -104,6 +106,7 @@ public class RoundHelper {
         mPaint = new Paint();
         mPaint.setColor(Color.WHITE);
         mPaint.setAntiAlias(true);
+        mPaint.setFilterBitmap(true);
         mPaint.setDither(true);
     }
 
@@ -129,46 +132,39 @@ public class RoundHelper {
         } else {
             mClipPath.addRoundRect(areas, radii, Path.Direction.CW);
         }
-//        mClipPath.moveTo(-mEdgeFix, -mEdgeFix);  // 通过空操作让Path区域占满画布
-//        mClipPath.moveTo(w + mEdgeFix, h + mEdgeFix);
-        Region clip = new Region((int) areas.left, (int) areas.top,
-                (int) areas.right, (int) areas.bottom);
+        //        mClipPath.moveTo(-mEdgeFix, -mEdgeFix);  // 通过空操作让Path区域占满画布
+        //        mClipPath.moveTo(w + mEdgeFix, h + mEdgeFix);
+        Region clip = new Region((int) areas.left, (int) areas.top, (int) areas.right,
+                (int) areas.bottom);
         mAreaRegion.setPath(mClipPath, clip);
-    }
-    
-    /**
-     * 开启硬件加速
-     * @param view
-     */
-    public void openHardware(View view){
-        view.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-    }
-    
-    public void onClipDraw(Canvas canvas) {
-        if (mStrokeWidth > 0) {
-            // 支持半透明描边，将与描边区域重叠的内容裁剪掉
-            mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
-            mPaint.setColor(Color.WHITE);
-            mPaint.setStrokeWidth(mStrokeWidth * 2);
-            mPaint.setStyle(Paint.Style.STROKE);
-            canvas.drawPath(mClipPath, mPaint);
-            // 绘制描边
-            mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER));
-            mPaint.setColor(mStrokeColor);
-            mPaint.setStyle(Paint.Style.STROKE);
-            canvas.drawPath(mClipPath, mPaint);
-        }
-        mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
-        mPaint.setColor(Color.WHITE);
-        mPaint.setStyle(Paint.Style.FILL);
-        canvas.drawPath(mClipPath, mPaint);
     }
 
 
     //--- Selector 支持 ----------------------------------------------------------------------------
 
-    public boolean mChecked;              // 是否是 check 状态
-    public OnCheckedChangeListener mOnCheckedChangeListener;
+    public void onClipDraw(Canvas canvas) {
+        if (mStrokeWidth <= 0) {
+            mStrokeWidth = 1;
+            mStrokeColor = Color.TRANSPARENT;
+        }
+        //        if (mStrokeWidth > 0) {
+        // 支持半透明描边，将与描边区域重叠的内容裁剪掉
+        mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
+        mPaint.setColor(Color.WHITE);
+        mPaint.setStrokeWidth(mStrokeWidth * 2);
+        mPaint.setStyle(Paint.Style.STROKE);
+        canvas.drawPath(mClipPath, mPaint);
+        // 绘制描边
+        mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER));
+        mPaint.setColor(mStrokeColor);
+        mPaint.setStyle(Paint.Style.STROKE);
+        canvas.drawPath(mClipPath, mPaint);
+        //        }
+        mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
+        mPaint.setColor(Color.WHITE);
+        mPaint.setStyle(Paint.Style.FILL);
+        canvas.drawPath(mClipPath, mPaint);
+    }
 
     public void drawableStateChanged(View view) {
         if (view instanceof RoundAttrs) {
@@ -178,26 +174,34 @@ public class RoundHelper {
                 if (((Checkable) view).isChecked())
                     stateListArray.add(android.R.attr.state_checked);
             }
-            if (view.isEnabled()) stateListArray.add(android.R.attr.state_enabled);
-            if (view.isFocused()) stateListArray.add(android.R.attr.state_focused);
-            if (view.isPressed()) stateListArray.add(android.R.attr.state_pressed);
-            if (view.isHovered()) stateListArray.add(android.R.attr.state_hovered);
-            if (view.isSelected()) stateListArray.add(android.R.attr.state_selected);
-            if (view.isActivated()) stateListArray.add(android.R.attr.state_activated);
-            if (view.hasWindowFocus()) stateListArray.add(android.R.attr.state_window_focused);
+            if (view.isEnabled())
+                stateListArray.add(android.R.attr.state_enabled);
+            if (view.isFocused())
+                stateListArray.add(android.R.attr.state_focused);
+            if (view.isPressed())
+                stateListArray.add(android.R.attr.state_pressed);
+            if (view.isHovered())
+                stateListArray.add(android.R.attr.state_hovered);
+            if (view.isSelected())
+                stateListArray.add(android.R.attr.state_selected);
+            if (view.isActivated())
+                stateListArray.add(android.R.attr.state_activated);
+            if (view.hasWindowFocus())
+                stateListArray.add(android.R.attr.state_window_focused);
 
             if (mStrokeColorStateList != null && mStrokeColorStateList.isStateful()) {
                 int[] stateList = new int[stateListArray.size()];
                 for (int i = 0; i < stateListArray.size(); i++) {
                     stateList[i] = stateListArray.get(i);
                 }
-                int stateColor = mStrokeColorStateList.getColorForState(stateList, mDefaultStrokeColor);
+                int stateColor = mStrokeColorStateList.getColorForState(stateList,
+                        mDefaultStrokeColor);
                 ((RoundAttrs) view).setStrokeColor(stateColor);
             }
         }
     }
 
     public interface OnCheckedChangeListener {
-        void onCheckedChanged(View view,boolean isChecked);
+        void onCheckedChanged(View view, boolean isChecked);
     }
 }
