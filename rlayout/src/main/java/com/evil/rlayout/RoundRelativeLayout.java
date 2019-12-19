@@ -30,7 +30,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.widget.Checkable;
 import android.widget.RelativeLayout;
 
 import com.evil.rlayout.helper.RoundAttrs;
@@ -41,36 +40,35 @@ import com.evil.rlayout.helper.RoundHelper;
  * 作用：圆角相对布局
  * 作者：GcsSloop
  */
-public class RoundRelativeLayout extends RelativeLayout implements Checkable, RoundAttrs {
+public class RoundRelativeLayout extends RelativeLayout implements RoundAttrs {
     RoundHelper mRCHelper;
-    
+
     public RoundRelativeLayout(@NonNull Context context) {
         super(context);
         mRCHelper = new RoundHelper();
         mRCHelper.initAttrs(context, null);
     }
-    
-    public RoundRelativeLayout(
-            @NonNull Context context,@Nullable AttributeSet attrs)
+
+    public RoundRelativeLayout(@NonNull Context context, @Nullable AttributeSet attrs)
     {
-        super(context,attrs);
+        super(context, attrs);
         mRCHelper = new RoundHelper();
         mRCHelper.initAttrs(context, attrs);
     }
-    
-    public RoundRelativeLayout(
-            @NonNull Context context,@Nullable AttributeSet attrs,int defStyleAttr)
+
+    public RoundRelativeLayout(@NonNull Context context, @Nullable AttributeSet attrs,
+            int defStyleAttr)
     {
-        super(context,attrs,defStyleAttr);
+        super(context, attrs, defStyleAttr);
         mRCHelper = new RoundHelper();
         mRCHelper.initAttrs(context, attrs);
     }
-    
+
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public RoundRelativeLayout(
-            @NonNull Context context,@Nullable AttributeSet attrs,int defStyleAttr,int defStyleRes)
+    public RoundRelativeLayout(@NonNull Context context, @Nullable AttributeSet attrs,
+            int defStyleAttr, int defStyleRes)
     {
-        super(context,attrs,defStyleAttr,defStyleRes);
+        super(context, attrs, defStyleAttr, defStyleRes);
         mRCHelper = new RoundHelper();
         mRCHelper.initAttrs(context, attrs);
     }
@@ -86,7 +84,7 @@ public class RoundRelativeLayout extends RelativeLayout implements Checkable, Ro
         canvas.saveLayer(mRCHelper.mLayer, null, Canvas.ALL_SAVE_FLAG);
         super.dispatchDraw(canvas);
         mRCHelper.openHardware(this);
-        mRCHelper.onClipDraw(canvas);
+        mRCHelper.onClipDraw(canvas,true);
         canvas.restore();
     }
 
@@ -105,19 +103,25 @@ public class RoundRelativeLayout extends RelativeLayout implements Checkable, Ro
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        int action = ev.getAction();
-        if (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_UP) {
-            refreshDrawableState();
-        } else if (action == MotionEvent.ACTION_CANCEL) {
-            setPressed(false);
-            refreshDrawableState();
-        }
-        if (!mRCHelper.mAreaRegion.contains((int) ev.getX(), (int) ev.getY())) {
-            setPressed(false);
-            refreshDrawableState();
-            return false;
-        }
+        //        int action = ev.getAction();
+        //        if (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_UP) {
+        //            refreshDrawableState();
+        //        } else if (action == MotionEvent.ACTION_CANCEL) {
+        //            setPressed(false);
+        //            refreshDrawableState();
+        //        }
+        //        if (!mRCHelper.mAreaRegion.contains((int) ev.getX(), (int) ev.getY())) {
+        //            setPressed(false);
+        //            refreshDrawableState();
+        //            return false;
+        //        }
         return super.dispatchTouchEvent(ev);
+    }
+
+    @Override
+    public void refreshDrawableState() {
+        super.refreshDrawableState();
+        mRCHelper.drawableStateChanged(this);
     }
 
     //--- 公开接口 ----------------------------------------------------------------------------------
@@ -208,34 +212,34 @@ public class RoundRelativeLayout extends RelativeLayout implements Checkable, Ro
 
     //--- Selector 支持 ----------------------------------------------------------------------------
 
-    @Override
-    protected void drawableStateChanged() {
-        super.drawableStateChanged();
-        mRCHelper.drawableStateChanged(this);
-    }
-
-    @Override
-    public void setChecked(boolean checked) {
-        if (mRCHelper.mChecked != checked) {
-            mRCHelper.mChecked = checked;
-            refreshDrawableState();
-            if (mRCHelper.mOnCheckedChangeListener != null) {
-                mRCHelper.mOnCheckedChangeListener.onCheckedChanged(this, mRCHelper.mChecked);
-            }
+        @Override
+        protected void drawableStateChanged() {
+            super.drawableStateChanged();
+            mRCHelper.drawableStateChanged(this);
         }
-    }
-
-    @Override
-    public boolean isChecked() {
-        return mRCHelper.mChecked;
-    }
-
-    @Override
-    public void toggle() {
-        setChecked(!mRCHelper.mChecked);
-    }
-
-    public void setOnCheckedChangeListener(RoundHelper.OnCheckedChangeListener listener) {
-        mRCHelper.mOnCheckedChangeListener = listener;
-    }
+    //
+    //    @Override
+    //    public void setChecked(boolean checked) {
+    //        if (mRCHelper.mChecked != checked) {
+    //            mRCHelper.mChecked = checked;
+    //            refreshDrawableState();
+    //            if (mRCHelper.mOnCheckedChangeListener != null) {
+    //                mRCHelper.mOnCheckedChangeListener.onCheckedChanged(this, mRCHelper.mChecked);
+    //            }
+    //        }
+    //    }
+    //
+    //    @Override
+    //    public boolean isChecked() {
+    //        return mRCHelper.mChecked;
+    //    }
+    //
+    //    @Override
+    //    public void toggle() {
+    //        setChecked(!mRCHelper.mChecked);
+    //    }
+    //
+    //    public void setOnCheckedChangeListener(RoundHelper.OnCheckedChangeListener listener) {
+    //        mRCHelper.mOnCheckedChangeListener = listener;
+    //    }
 }

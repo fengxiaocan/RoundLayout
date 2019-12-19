@@ -30,7 +30,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.widget.Checkable;
 import android.widget.LinearLayout;
 
 import com.evil.rlayout.helper.RoundAttrs;
@@ -41,36 +40,35 @@ import com.evil.rlayout.helper.RoundHelper;
  * 作用：圆角相对布局
  * 作者：GcsSloop
  */
-public class RoundLinearLayout extends LinearLayout implements Checkable, RoundAttrs {
+public class RoundLinearLayout extends LinearLayout implements RoundAttrs {
     RoundHelper mRCHelper;
-    
+
     public RoundLinearLayout(@NonNull Context context) {
         super(context);
         mRCHelper = new RoundHelper();
         mRCHelper.initAttrs(context, null);
     }
-    
-    public RoundLinearLayout(
-            @NonNull Context context,@Nullable AttributeSet attrs)
+
+    public RoundLinearLayout(@NonNull Context context, @Nullable AttributeSet attrs)
     {
-        super(context,attrs);
+        super(context, attrs);
         mRCHelper = new RoundHelper();
         mRCHelper.initAttrs(context, attrs);
     }
-    
-    public RoundLinearLayout(
-            @NonNull Context context,@Nullable AttributeSet attrs,int defStyleAttr)
+
+    public RoundLinearLayout(@NonNull Context context, @Nullable AttributeSet attrs,
+            int defStyleAttr)
     {
-        super(context,attrs,defStyleAttr);
+        super(context, attrs, defStyleAttr);
         mRCHelper = new RoundHelper();
         mRCHelper.initAttrs(context, attrs);
     }
-    
+
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public RoundLinearLayout(
-            @NonNull Context context,@Nullable AttributeSet attrs,int defStyleAttr,int defStyleRes)
+    public RoundLinearLayout(@NonNull Context context, @Nullable AttributeSet attrs,
+            int defStyleAttr, int defStyleRes)
     {
-        super(context,attrs,defStyleAttr,defStyleRes);
+        super(context, attrs, defStyleAttr, defStyleRes);
         mRCHelper = new RoundHelper();
         mRCHelper.initAttrs(context, attrs);
     }
@@ -86,7 +84,7 @@ public class RoundLinearLayout extends LinearLayout implements Checkable, RoundA
         canvas.saveLayer(mRCHelper.mLayer, null, Canvas.ALL_SAVE_FLAG);
         super.dispatchDraw(canvas);
         mRCHelper.openHardware(this);
-        mRCHelper.onClipDraw(canvas);
+        mRCHelper.onClipDraw(canvas,true);
         canvas.restore();
     }
 
@@ -105,19 +103,25 @@ public class RoundLinearLayout extends LinearLayout implements Checkable, RoundA
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        int action = ev.getAction();
-        if (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_UP) {
-            refreshDrawableState();
-        } else if (action == MotionEvent.ACTION_CANCEL) {
-            setPressed(false);
-            refreshDrawableState();
-        }
-        if (!mRCHelper.mAreaRegion.contains((int) ev.getX(), (int) ev.getY())) {
-            setPressed(false);
-            refreshDrawableState();
-            return false;
-        }
+        //        int action = ev.getAction();
+        //        if (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_UP) {
+        //            refreshDrawableState();
+        //        } else if (action == MotionEvent.ACTION_CANCEL) {
+        //            setPressed(false);
+        //            refreshDrawableState();
+        //        }
+        //        if (!mRCHelper.mAreaRegion.contains((int) ev.getX(), (int) ev.getY())) {
+        //            setPressed(false);
+        //            refreshDrawableState();
+        //            return false;
+        //        }
         return super.dispatchTouchEvent(ev);
+    }
+
+    @Override
+    public void refreshDrawableState() {
+        super.refreshDrawableState();
+        mRCHelper.drawableStateChanged(this);
     }
 
     //--- 公开接口 ----------------------------------------------------------------------------------
@@ -213,29 +217,29 @@ public class RoundLinearLayout extends LinearLayout implements Checkable, RoundA
         super.drawableStateChanged();
         mRCHelper.drawableStateChanged(this);
     }
-
-    @Override
-    public void setChecked(boolean checked) {
-        if (mRCHelper.mChecked != checked) {
-            mRCHelper.mChecked = checked;
-            refreshDrawableState();
-            if (mRCHelper.mOnCheckedChangeListener != null) {
-                mRCHelper.mOnCheckedChangeListener.onCheckedChanged(this, mRCHelper.mChecked);
-            }
-        }
-    }
-
-    @Override
-    public boolean isChecked() {
-        return mRCHelper.mChecked;
-    }
-
-    @Override
-    public void toggle() {
-        setChecked(!mRCHelper.mChecked);
-    }
-
-    public void setOnCheckedChangeListener(RoundHelper.OnCheckedChangeListener listener) {
-        mRCHelper.mOnCheckedChangeListener = listener;
-    }
+    //
+    //    @Override
+    //    public void setChecked(boolean checked) {
+    //        if (mRCHelper.mChecked != checked) {
+    //            mRCHelper.mChecked = checked;
+    //            refreshDrawableState();
+    //            if (mRCHelper.mOnCheckedChangeListener != null) {
+    //                mRCHelper.mOnCheckedChangeListener.onCheckedChanged(this, mRCHelper.mChecked);
+    //            }
+    //        }
+    //    }
+    //
+    //    @Override
+    //    public boolean isChecked() {
+    //        return mRCHelper.mChecked;
+    //    }
+    //
+    //    @Override
+    //    public void toggle() {
+    //        setChecked(!mRCHelper.mChecked);
+    //    }
+    //
+    //    public void setOnCheckedChangeListener(RoundHelper.OnCheckedChangeListener listener) {
+    //        mRCHelper.mOnCheckedChangeListener = listener;
+    //    }
 }

@@ -30,7 +30,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.widget.Checkable;
 import android.widget.TextView;
 
 import com.evil.rlayout.helper.RoundAttrs;
@@ -40,7 +39,7 @@ import com.evil.rlayout.helper.RoundHelper;
 /**
  * 作用：圆角TextView
  */
-public class RoundTextView extends TextView implements Checkable, RoundAttrs {
+public class RoundTextView extends TextView implements RoundAttrs {
 
     RoundHelper mRCHelper;
 
@@ -98,27 +97,32 @@ public class RoundTextView extends TextView implements Checkable, RoundAttrs {
         canvas.saveLayer(mRCHelper.mLayer, null, Canvas.ALL_SAVE_FLAG);
         super.onDraw(canvas);
         mRCHelper.openHardware(this);
-        mRCHelper.onClipDraw(canvas);
+        mRCHelper.onClipDraw(canvas,false);
         canvas.restore();
     }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        int action = ev.getAction();
-        if (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_UP) {
-            refreshDrawableState();
-        } else if (action == MotionEvent.ACTION_CANCEL) {
-            setPressed(false);
-            refreshDrawableState();
-        }
-        if (!mRCHelper.mAreaRegion.contains((int) ev.getX(), (int) ev.getY())) {
-            setPressed(false);
-            refreshDrawableState();
-            return false;
-        }
+        //        int action = ev.getAction();
+        //        if (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_UP) {
+        //            refreshDrawableState();
+        //        } else if (action == MotionEvent.ACTION_CANCEL) {
+        //            setPressed(false);
+        //            refreshDrawableState();
+        //        }
+        //        if (!mRCHelper.mAreaRegion.contains((int) ev.getX(), (int) ev.getY())) {
+        //            setPressed(false);
+        //            refreshDrawableState();
+        //            return false;
+        //        }
         return super.dispatchTouchEvent(ev);
     }
 
+    @Override
+    public void refreshDrawableState() {
+        super.refreshDrawableState();
+        mRCHelper.drawableStateChanged(this);
+    }
 
     //--- 公开接口 ----------------------------------------------------------------------------------
 
@@ -214,28 +218,28 @@ public class RoundTextView extends TextView implements Checkable, RoundAttrs {
         mRCHelper.drawableStateChanged(this);
     }
 
-    @Override
-    public boolean isChecked() {
-        return mRCHelper.mChecked;
-    }
-
-    @Override
-    public void setChecked(boolean checked) {
-        if (mRCHelper.mChecked != checked) {
-            mRCHelper.mChecked = checked;
-            refreshDrawableState();
-            if (mRCHelper.mOnCheckedChangeListener != null) {
-                mRCHelper.mOnCheckedChangeListener.onCheckedChanged(this, mRCHelper.mChecked);
-            }
-        }
-    }
-
-    @Override
-    public void toggle() {
-        setChecked(!mRCHelper.mChecked);
-    }
-
-    public void setOnCheckedChangeListener(RoundHelper.OnCheckedChangeListener listener) {
-        mRCHelper.mOnCheckedChangeListener = listener;
-    }
+    //    @Override
+    //    public boolean isChecked() {
+    //        return mRCHelper.mChecked;
+    //    }
+    //
+    //    @Override
+    //    public void setChecked(boolean checked) {
+    //        if (mRCHelper.mChecked != checked) {
+    //            mRCHelper.mChecked = checked;
+    //            refreshDrawableState();
+    //            if (mRCHelper.mOnCheckedChangeListener != null) {
+    //                mRCHelper.mOnCheckedChangeListener.onCheckedChanged(this, mRCHelper.mChecked);
+    //            }
+    //        }
+    //    }
+    //
+    //    @Override
+    //    public void toggle() {
+    //        setChecked(!mRCHelper.mChecked);
+    //    }
+    //
+    //    public void setOnCheckedChangeListener(RoundHelper.OnCheckedChangeListener listener) {
+    //        mRCHelper.mOnCheckedChangeListener = listener;
+    //    }
 }

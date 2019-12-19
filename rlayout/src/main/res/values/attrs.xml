@@ -43,6 +43,8 @@
 
     <!-- 是否剪裁 RCLayout 的背景 -->
     <attr name="clip_background" format="boolean" />
+    <!-- 是否剪裁 padding 的背景 -->
+    <attr name="clip_padding" format="boolean" />
 
     <!--真正用于解析的属性-->
     <declare-styleable name="RoundAttrs">
@@ -55,6 +57,7 @@
         <attr name="round_stroke_color" />
         <attr name="round_stroke_width" />
         <attr name="clip_background" />
+        <attr name="clip_padding" />
     </declare-styleable>
 
     <!--假体：用于提示-->
@@ -68,6 +71,7 @@
         <attr name="round_stroke_color" />
         <attr name="round_stroke_width" />
         <attr name="clip_background" />
+        <attr name="clip_padding" />
     </declare-styleable>
     <!--假体：用于提示-->
     <declare-styleable name="RoundLinearLayout">
@@ -80,6 +84,7 @@
         <attr name="round_stroke_color" />
         <attr name="round_stroke_width" />
         <attr name="clip_background" />
+        <attr name="clip_padding" />
     </declare-styleable>
     <!--假体：用于提示-->
     <declare-styleable name="RoundFrameLayout">
@@ -92,6 +97,7 @@
         <attr name="round_stroke_color" />
         <attr name="round_stroke_width" />
         <attr name="clip_background" />
+        <attr name="clip_padding" />
     </declare-styleable>
 
     <!--假体：用于提示-->
@@ -105,6 +111,7 @@
         <attr name="round_stroke_color" />
         <attr name="round_stroke_width" />
         <attr name="clip_background" />
+        <attr name="clip_padding" />
     </declare-styleable>
     <declare-styleable name="RoundTextView">
         <attr name="round_as_circle" />
@@ -116,6 +123,7 @@
         <attr name="round_stroke_color" />
         <attr name="round_stroke_width" />
         <attr name="clip_background" />
+        <attr name="clip_padding" />
     </declare-styleable>
     <declare-styleable name="RoundButton">
         <attr name="round_as_circle" />
@@ -127,6 +135,7 @@
         <attr name="round_stroke_color" />
         <attr name="round_stroke_width" />
         <attr name="clip_background" />
+        <attr name="clip_padding" />
     </declare-styleable>
 
 </resources>

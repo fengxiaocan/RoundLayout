@@ -29,13 +29,11 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PaintFlagsDrawFilter;
 import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
-import android.graphics.Region;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Checkable;
@@ -58,11 +56,17 @@ public class RoundHelper {
     public ColorStateList mStrokeColorStateList;// 描边颜色的状态
     public int mStrokeWidth;               // 描边半径
     public boolean mClipBackground;        // 是否剪裁背景
-    public Region mAreaRegion;             // 内容区域
+    public boolean mClipPadding;            // 是否剪裁Padding属性
+    //    public Region mAreaRegion;             // 内容区域
     //    public int mEdgeFix = 0;              // 边缘修复
     public RectF mLayer;                   // 画布图层大小
-    public boolean mChecked;              // 是否是 check 状态
-    public OnCheckedChangeListener mOnCheckedChangeListener;
+    //    public boolean mChecked;              // 是否是 check 状态
+    private RectF areasRect;
+    private PointF center;
+    //    private Region region;
+    private PorterDuffXfermode xfermode;
+    private PorterDuffXfermode duffXfermode;
+    private PorterDuffXfermode porterDuffXfermode;
 
     public void initAttrs(Context context, AttributeSet attrs) {
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.RoundAttrs);
@@ -77,6 +81,7 @@ public class RoundHelper {
         }
         mStrokeWidth = ta.getDimensionPixelSize(R.styleable.RoundAttrs_round_stroke_width, 0);
         mClipBackground = ta.getBoolean(R.styleable.RoundAttrs_clip_background, true);
+        mClipPadding = ta.getBoolean(R.styleable.RoundAttrs_clip_padding, false);
         int roundCorner = ta.getDimensionPixelSize(R.styleable.RoundAttrs_round_corner, 0);
         int roundCornerTopLeft = ta.getDimensionPixelSize(
                 R.styleable.RoundAttrs_round_corner_top_left, roundCorner);
@@ -102,11 +107,20 @@ public class RoundHelper {
 
         mLayer = new RectF();
         mClipPath = new Path();
-        mAreaRegion = new Region();
+        //        mAreaRegion = new Region();
         mPaint = new Paint();
         mPaint.setColor(Color.WHITE);
         mPaint.setAntiAlias(true);
         mPaint.setDither(true);
+        mPaint.setStrokeCap(Paint.Cap.ROUND); //圆角效果
+        mPaint.setStrokeJoin(Paint.Join.ROUND);//拐角风格
+
+        areasRect = new RectF();
+        center = new PointF(0, 0);
+        //        region = new Region();
+        xfermode = new PorterDuffXfermode(PorterDuff.Mode.DST_OUT);
+        duffXfermode = new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER);
+        porterDuffXfermode = new PorterDuffXfermode(PorterDuff.Mode.DST_IN);
     }
 
     public void onSizeChanged(View view, int w, int h) {
@@ -117,56 +131,69 @@ public class RoundHelper {
     public void refreshRegion(View view) {
         int w = (int) mLayer.width();
         int h = (int) mLayer.height();
-        RectF areas = new RectF();
-        areas.left = view.getPaddingLeft();
-        areas.top = view.getPaddingTop();
-        areas.right = w - view.getPaddingRight();
-        areas.bottom = h - view.getPaddingBottom();
+        if (mClipPadding) {
+            areasRect.left = view.getPaddingLeft();
+            areasRect.top = view.getPaddingTop();
+            areasRect.right = w - view.getPaddingRight();
+            areasRect.bottom = h - view.getPaddingBottom();
+        } else {
+            areasRect.left = 0;
+            areasRect.top = 0;
+            areasRect.right = w;
+            areasRect.bottom = h;
+        }
         mClipPath.reset();
         if (mRoundAsCircle) {
-            float d = areas.width() >= areas.height() ? areas.height() : areas.width();
+            float d = Math.min(areasRect.width(), areasRect.height());
             float r = d / 2;
-            PointF center = new PointF(w / 2, h / 2);
+
+            center.x = w / 2;
+            center.y = h / 2;
             mClipPath.addCircle(center.x, center.y, r, Path.Direction.CW);
         } else {
-            mClipPath.addRoundRect(areas, radii, Path.Direction.CW);
+            mClipPath.addRoundRect(areasRect, radii, Path.Direction.CW);
         }
         //        mClipPath.moveTo(-mEdgeFix, -mEdgeFix);  // 通过空操作让Path区域占满画布
         //        mClipPath.moveTo(w + mEdgeFix, h + mEdgeFix);
-        Region clip = new Region((int) areas.left, (int) areas.top, (int) areas.right,
-                (int) areas.bottom);
-        mAreaRegion.setPath(mClipPath, clip);
+        //        region.set((int) areasRect.left, (int) areasRect.top, (int) areasRect.right, (int) areasRect.bottom);
+        //        mAreaRegion.setPath(mClipPath, region);
     }
+
     /**
      * 开启硬件加速
+     *
      * @param view
      */
-    public void openHardware(View view){
-        view.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+    public void openHardware(View view) {
+        //        if (Build.VERSION.SDK_INT > N) {
+        //            view.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        //        }
     }
 
 
     //--- Selector 支持 ----------------------------------------------------------------------------
 
-    public void onClipDraw(Canvas canvas) {
-        if (mStrokeWidth <= 0) {
+    public void onClipDraw(Canvas canvas, boolean isViewGroup) {
+        if (!isViewGroup && mStrokeWidth <= 0) {
+            //圆角抗锯齿
             mStrokeWidth = 1;
             mStrokeColor = Color.TRANSPARENT;
         }
         //        if (mStrokeWidth > 0) {
         // 支持半透明描边，将与描边区域重叠的内容裁剪掉
-        mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
+        mPaint.setXfermode(xfermode);
         mPaint.setColor(Color.WHITE);
-        mPaint.setStrokeWidth(mStrokeWidth * 2);
+        mPaint.setStrokeWidth(mStrokeWidth);
         mPaint.setStyle(Paint.Style.STROKE);
         canvas.drawPath(mClipPath, mPaint);
         // 绘制描边
-        mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER));
+        mPaint.setXfermode(duffXfermode);
         mPaint.setColor(mStrokeColor);
         mPaint.setStyle(Paint.Style.STROKE);
         canvas.drawPath(mClipPath, mPaint);
         //        }
-        mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
+
+        mPaint.setXfermode(porterDuffXfermode);
         mPaint.setColor(Color.WHITE);
         mPaint.setStyle(Paint.Style.FILL);
         canvas.drawPath(mClipPath, mPaint);
@@ -174,28 +201,35 @@ public class RoundHelper {
 
     public void drawableStateChanged(View view) {
         if (view instanceof RoundAttrs) {
-            ArrayList<Integer> stateListArray = new ArrayList<>();
-            if (view instanceof Checkable) {
-                stateListArray.add(android.R.attr.state_checkable);
-                if (((Checkable) view).isChecked())
-                    stateListArray.add(android.R.attr.state_checked);
-            }
-            if (view.isEnabled())
-                stateListArray.add(android.R.attr.state_enabled);
-            if (view.isFocused())
-                stateListArray.add(android.R.attr.state_focused);
-            if (view.isPressed())
-                stateListArray.add(android.R.attr.state_pressed);
-            if (view.isHovered())
-                stateListArray.add(android.R.attr.state_hovered);
-            if (view.isSelected())
-                stateListArray.add(android.R.attr.state_selected);
-            if (view.isActivated())
-                stateListArray.add(android.R.attr.state_activated);
-            if (view.hasWindowFocus())
-                stateListArray.add(android.R.attr.state_window_focused);
-
             if (mStrokeColorStateList != null && mStrokeColorStateList.isStateful()) {
+                ArrayList<Integer> stateListArray = new ArrayList<>();
+                if (view instanceof Checkable) {
+                    stateListArray.add(android.R.attr.state_checkable);
+                    if (((Checkable) view).isChecked())
+                        stateListArray.add(android.R.attr.state_checked);
+                }
+                if (view.isEnabled()) {
+                    stateListArray.add(android.R.attr.state_enabled);
+                }
+                if (view.isFocused()) {
+                    stateListArray.add(android.R.attr.state_focused);
+                }
+                if (view.isPressed()) {
+                    stateListArray.add(android.R.attr.state_pressed);
+                }
+                if (view.isHovered()) {
+                    stateListArray.add(android.R.attr.state_hovered);
+                }
+                if (view.isSelected()) {
+                    stateListArray.add(android.R.attr.state_selected);
+                }
+                if (view.isActivated()) {
+                    stateListArray.add(android.R.attr.state_activated);
+                }
+                if (view.hasWindowFocus()) {
+                    stateListArray.add(android.R.attr.state_window_focused);
+                }
+
                 int[] stateList = new int[stateListArray.size()];
                 for (int i = 0; i < stateListArray.size(); i++) {
                     stateList[i] = stateListArray.get(i);
@@ -205,9 +239,5 @@ public class RoundHelper {
                 ((RoundAttrs) view).setStrokeColor(stateColor);
             }
         }
-    }
-
-    public interface OnCheckedChangeListener {
-        void onCheckedChanged(View view, boolean isChecked);
     }
 }
