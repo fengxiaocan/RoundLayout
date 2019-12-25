@@ -34,6 +34,7 @@ import android.graphics.PointF;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Checkable;
@@ -41,6 +42,8 @@ import android.widget.Checkable;
 import com.evil.rlayout.R;
 
 import java.util.ArrayList;
+
+import static android.os.Build.VERSION_CODES.N;
 
 /**
  * 作用：圆角辅助工具
@@ -67,6 +70,7 @@ public class RoundHelper {
     private PorterDuffXfermode xfermode;
     private PorterDuffXfermode duffXfermode;
     private PorterDuffXfermode porterDuffXfermode;
+    private boolean isRound = false;
 
     public void initAttrs(Context context, AttributeSet attrs) {
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.RoundAttrs);
@@ -161,37 +165,39 @@ public class RoundHelper {
 
     /**
      * 开启硬件加速
+     * 必须要开启,不然某些机型上的gif图片无法显示
      *
      * @param view
      */
     public void openHardware(View view) {
-        //        if (Build.VERSION.SDK_INT > N) {
-        //            view.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-        //        }
+        if (Build.VERSION.SDK_INT > N) {
+            view.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        }
     }
 
 
     //--- Selector 支持 ----------------------------------------------------------------------------
 
     public void onClipDraw(Canvas canvas, boolean isViewGroup) {
-        if (!isViewGroup && mStrokeWidth <= 0) {
+        isRound = mRoundAsCircle || radii[0] > 0 || radii[2] > 0 || radii[4] > 0 || radii[6] > 0;
+        if (isRound && !isViewGroup && mStrokeWidth <= 0) {
             //圆角抗锯齿
             mStrokeWidth = 1;
             mStrokeColor = Color.TRANSPARENT;
         }
-        //        if (mStrokeWidth > 0) {
-        // 支持半透明描边，将与描边区域重叠的内容裁剪掉
-        mPaint.setXfermode(xfermode);
-        mPaint.setColor(Color.WHITE);
-        mPaint.setStrokeWidth(mStrokeWidth);
-        mPaint.setStyle(Paint.Style.STROKE);
-        canvas.drawPath(mClipPath, mPaint);
-        // 绘制描边
-        mPaint.setXfermode(duffXfermode);
-        mPaint.setColor(mStrokeColor);
-        mPaint.setStyle(Paint.Style.STROKE);
-        canvas.drawPath(mClipPath, mPaint);
-        //        }
+        if (mStrokeWidth > 0) {
+            // 支持半透明描边，将与描边区域重叠的内容裁剪掉
+            mPaint.setXfermode(xfermode);
+            mPaint.setColor(Color.WHITE);
+            mPaint.setStrokeWidth(mStrokeWidth);
+            mPaint.setStyle(Paint.Style.STROKE);
+            canvas.drawPath(mClipPath, mPaint);
+            // 绘制描边
+            mPaint.setXfermode(duffXfermode);
+            mPaint.setColor(mStrokeColor);
+            mPaint.setStyle(Paint.Style.STROKE);
+            canvas.drawPath(mClipPath, mPaint);
+        }
 
         mPaint.setXfermode(porterDuffXfermode);
         mPaint.setColor(Color.WHITE);
