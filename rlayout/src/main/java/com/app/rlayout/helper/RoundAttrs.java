@@ -20,7 +20,7 @@
  * WebSite: http://www.gcssloop.com
  */
 
-package com.evil.rlayout.helper;
+package com.app.rlayout.helper;
 
 public interface RoundAttrs {
     void setClipBackground(boolean clipBackground);

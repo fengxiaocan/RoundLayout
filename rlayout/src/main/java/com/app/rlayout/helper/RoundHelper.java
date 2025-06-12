@@ -20,7 +20,7 @@
  * WebSite: http://www.gcssloop.com
  */
 
-package com.evil.rlayout.helper;
+package com.app.rlayout.helper;
 
 
 import android.content.Context;
@@ -39,7 +39,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Checkable;
 
-import com.evil.rlayout.R;
+import com.app.rlayout.R;
 
 import java.util.ArrayList;
 

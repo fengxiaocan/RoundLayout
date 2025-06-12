@@ -20,7 +20,7 @@
  * WebSite: http://www.gcssloop.com
  */
 
-package com.evil.rlayout;
+package com.app.rlayout;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -32,8 +32,8 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.FrameLayout;
 
-import com.evil.rlayout.helper.RoundAttrs;
-import com.evil.rlayout.helper.RoundHelper;
+import com.app.rlayout.helper.RoundAttrs;
+import com.app.rlayout.helper.RoundHelper;
 
 
 /**

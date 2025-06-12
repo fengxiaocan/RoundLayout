@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Last modified 2018-04-15 22:59:54
+ * Last modified 2018-04-13 23:18:56
  *
  * GitHub: https://github.com/GcsSloop
  * WeiBo: http://weibo.com/GcsSloop
  * WebSite: http://www.gcssloop.com
  */
 
-package com.evil.rlayout;
+package com.app.rlayout;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -30,33 +30,34 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 
-import com.evil.rlayout.helper.RoundAttrs;
-import com.evil.rlayout.helper.RoundHelper;
+import com.app.rlayout.helper.RoundAttrs;
+import com.app.rlayout.helper.RoundHelper;
 
 
 /**
- * 作用：圆角图片
+ * 作用：圆角相对布局
+ * 作者：GcsSloop
  */
-public class RoundImageView extends ImageView implements RoundAttrs {
-
+public class RoundLinearLayout extends LinearLayout implements RoundAttrs {
     RoundHelper mRCHelper;
 
-    public RoundImageView(@NonNull Context context) {
+    public RoundLinearLayout(@NonNull Context context) {
         super(context);
         mRCHelper = new RoundHelper();
         mRCHelper.initAttrs(context, null);
     }
 
-    public RoundImageView(@NonNull Context context, @Nullable AttributeSet attrs)
+    public RoundLinearLayout(@NonNull Context context, @Nullable AttributeSet attrs)
     {
         super(context, attrs);
         mRCHelper = new RoundHelper();
         mRCHelper.initAttrs(context, attrs);
     }
 
-    public RoundImageView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr)
+    public RoundLinearLayout(@NonNull Context context, @Nullable AttributeSet attrs,
+            int defStyleAttr)
     {
         super(context, attrs, defStyleAttr);
         mRCHelper = new RoundHelper();
@@ -64,8 +65,8 @@ public class RoundImageView extends ImageView implements RoundAttrs {
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public RoundImageView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr,
-            int defStyleRes)
+    public RoundLinearLayout(@NonNull Context context, @Nullable AttributeSet attrs,
+            int defStyleAttr, int defStyleRes)
     {
         super(context, attrs, defStyleAttr, defStyleRes);
         mRCHelper = new RoundHelper();
@@ -78,6 +79,14 @@ public class RoundImageView extends ImageView implements RoundAttrs {
         mRCHelper.onSizeChanged(this, w, h);
     }
 
+    @Override
+    protected void dispatchDraw(Canvas canvas) {
+        canvas.saveLayer(mRCHelper.mLayer, null, Canvas.ALL_SAVE_FLAG);
+        super.dispatchDraw(canvas);
+        mRCHelper.openHardware(this);
+        mRCHelper.onClipDraw(canvas,true);
+        canvas.restore();
+    }
 
     @Override
     public void draw(Canvas canvas) {
@@ -90,15 +99,6 @@ public class RoundImageView extends ImageView implements RoundAttrs {
         } else {
             super.draw(canvas);
         }
-    }
-
-    @Override
-    protected void onDraw(Canvas canvas) {
-        canvas.saveLayer(mRCHelper.mLayer, null, Canvas.ALL_SAVE_FLAG);
-        super.onDraw(canvas);
-        mRCHelper.openHardware(this);
-        mRCHelper.onClipDraw(canvas, false);
-        canvas.restore();
     }
 
     @Override
@@ -217,7 +217,7 @@ public class RoundImageView extends ImageView implements RoundAttrs {
         super.drawableStateChanged();
         mRCHelper.drawableStateChanged(this);
     }
-
+    //
     //    @Override
     //    public void setChecked(boolean checked) {
     //        if (mRCHelper.mChecked != checked) {

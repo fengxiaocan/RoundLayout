@@ -41,7 +41,7 @@
 RCRelativeLayout(Round Corner RelativeLayout)，使用圆角布局包裹需要圆角的内容然后添加自定义属性即可
 
 ```xml
- <com.evil.rlayout.RoundRelativeLayout
+ <com.app.rlayout.RoundRelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="360dp"
@@ -70,7 +70,7 @@ RCRelativeLayout(Round Corner RelativeLayout)，使用圆角布局包裹需要�
             android:scaleType="centerCrop"
             android:src="@mipmap/a03" />
 
-</com.evil.rlayout.RoundRelativeLayout>
+</com.app.rlayout.RoundRelativeLayout>
 ```
 
 ### 2. 配置属性

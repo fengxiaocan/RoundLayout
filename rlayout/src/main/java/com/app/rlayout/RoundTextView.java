@@ -20,7 +20,7 @@
  * WebSite: http://www.gcssloop.com
  */
 
-package com.evil.rlayout;
+package com.app.rlayout;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -30,33 +30,33 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.widget.Button;
+import android.widget.TextView;
 
-import com.evil.rlayout.helper.RoundAttrs;
-import com.evil.rlayout.helper.RoundHelper;
+import com.app.rlayout.helper.RoundAttrs;
+import com.app.rlayout.helper.RoundHelper;
 
 
 /**
  * 作用：圆角TextView
  */
-public class RoundButton extends Button implements RoundAttrs {
+public class RoundTextView extends TextView implements RoundAttrs {
 
     RoundHelper mRCHelper;
 
-    public RoundButton(@NonNull Context context) {
+    public RoundTextView(@NonNull Context context) {
         super(context);
         mRCHelper = new RoundHelper();
         mRCHelper.initAttrs(context, null);
     }
 
-    public RoundButton(@NonNull Context context, @Nullable AttributeSet attrs)
+    public RoundTextView(@NonNull Context context, @Nullable AttributeSet attrs)
     {
         super(context, attrs);
         mRCHelper = new RoundHelper();
         mRCHelper.initAttrs(context, attrs);
     }
 
-    public RoundButton(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr)
+    public RoundTextView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr)
     {
         super(context, attrs, defStyleAttr);
         mRCHelper = new RoundHelper();
@@ -64,7 +64,7 @@ public class RoundButton extends Button implements RoundAttrs {
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public RoundButton(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr,
+    public RoundTextView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr,
             int defStyleRes)
     {
         super(context, attrs, defStyleAttr, defStyleRes);
@@ -217,7 +217,7 @@ public class RoundButton extends Button implements RoundAttrs {
         super.drawableStateChanged();
         mRCHelper.drawableStateChanged(this);
     }
-    //
+
     //    @Override
     //    public boolean isChecked() {
     //        return mRCHelper.mChecked;
